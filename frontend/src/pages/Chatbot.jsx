@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import './Chatbot.css'
 
 export default function Chatbot({ user }) {
@@ -17,12 +17,13 @@ export default function Chatbot({ user }) {
 
   const fetchGreeting = async () => {
     try {
-      const response = await axios.get('/api/chatbot/greeting')
+      const response = await api.get('/chatbot/greeting')
       setGreeting(response.data.message)
       setOptions(response.data.options)
       setMessages([{ type: 'bot', text: response.data.message }])
     } catch (error) {
       console.error('Error fetching greeting:', error)
+      setMessages([{ type: 'bot', text: 'Sorry, unable to connect to the AI. Please try again.' }])
     }
   }
 
@@ -31,21 +32,22 @@ export default function Chatbot({ user }) {
     setMessages([...messages, { type: 'user', text: career }])
 
     try {
-      const response = await axios.post('/api/chatbot/chat', { userInput: career })
+      const response = await api.post('/chatbot/chat', { userInput: career })
       setMessages((prev) => [...prev, { type: 'bot', text: response.data.message }])
 
       if (response.data.isConfirmed) {
         setSelectedCareer(career)
         // Save to profile
         const token = localStorage.getItem('authToken')
-        await axios.put(
-          '/api/auth/profile',
+        await api.put(
+          '/auth/profile',
           { careerGoal: career },
           { headers: { Authorization: `Bearer ${token}` } }
         )
       }
     } catch (error) {
-      setMessages((prev) => [...prev, { type: 'bot', text: 'Sorry, something went wrong.' }])
+      console.error('Chat error:', error)
+      setMessages((prev) => [...prev, { type: 'bot', text: 'Sorry, something went wrong. Please try again.' }])
     } finally {
       setLoading(false)
     }

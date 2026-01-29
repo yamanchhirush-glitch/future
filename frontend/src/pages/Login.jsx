@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../api'
 import { useNavigate } from 'react-router-dom'
 import './Login.css'
 
@@ -18,7 +18,7 @@ export default function Login({ setUser }) {
 
     try {
       const phone = '+' + phoneNumber.replace(/\D/g, '')
-      await axios.post('/api/auth/send-otp', { phoneNumber: phone })
+      await api.post('/auth/send-otp', { phoneNumber: phone })
       setStep('otp')
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send OTP')
@@ -34,7 +34,7 @@ export default function Login({ setUser }) {
 
     try {
       const phone = '+' + phoneNumber.replace(/\D/g, '')
-      const response = await axios.post('/api/auth/verify-otp', {
+      const response = await api.post('/auth/verify-otp', {
         phoneNumber: phone,
         otp,
       })

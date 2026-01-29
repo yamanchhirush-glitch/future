@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import './PhotoTransform.css'
 
 export default function PhotoTransform({ user }) {
@@ -107,7 +107,7 @@ export default function PhotoTransform({ user }) {
       formData.append('career', career)
 
       const token = localStorage.getItem('authToken')
-      const response = await axios.post('/api/transformations/transform', formData, {
+      const response = await api.post('/transformations/transform', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -121,8 +121,8 @@ export default function PhotoTransform({ user }) {
       let attempts = 0
       while (!completed && attempts < 30) {
         await new Promise((resolve) => setTimeout(resolve, 2000))
-        const statusResponse = await axios.get(
-          `/api/transformations/${response.data.transformationId}`,
+        const statusResponse = await api.get(
+          `/transformations/${response.data.transformationId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
 

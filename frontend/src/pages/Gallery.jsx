@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import './Gallery.css'
 
 export default function Gallery({ user }) {
@@ -15,7 +15,7 @@ export default function Gallery({ user }) {
   const fetchTransformations = async () => {
     try {
       const token = localStorage.getItem('authToken')
-      const response = await axios.get('/api/transformations', {
+      const response = await api.get('/transformations', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setTransformations(response.data)

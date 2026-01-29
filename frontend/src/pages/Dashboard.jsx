@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import './Dashboard.css'
 
 export default function Dashboard({ user }) {
@@ -15,7 +15,7 @@ export default function Dashboard({ user }) {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('authToken')
-      const response = await axios.get('/api/auth/profile', {
+      const response = await api.get('/auth/profile', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setProfile(response.data)
